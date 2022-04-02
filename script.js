@@ -156,6 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
             'biz_account_id': '577'
         })
         mainForm.innerHTML = ''
+        current = 0;
+        tax = 0;
+        savings = 0;
+        salary = 0;
+        other = 0;
+        getPercentage()
         await fetchSubAccounts()
     }
 
