@@ -38,43 +38,61 @@ document.addEventListener('DOMContentLoaded', () => {
     let tax = 0;
     let savings = 0;
     let salary = 0;
+    let other = 0;
 
     let getTotal = () => {
-        return current + tax + savings + salary
+        let total = Number(current) + Number(tax) + Number(savings) + Number(salary) + Number(other)
+        return total
     }
 
     let getPerc = (item) => {
         let total = getTotal()
-        return `${((item / total) * 100).toFixed(2)}%`
+        if (!item || !total) {
+            return '0%'
+        }
+        return `${(((Number(item) || 0) / total) * 100).toFixed(2)}%`
     }
 
     let getPercentage = () => {
         let text = `
-            <span>Current:${getPerc(current)} Tax:${getPerc(tax)} Savings:${getPerc(savings)} Salary:${getPerc(salary)}</span>
+            <span>Current:${getPerc(current)} Tax:${getPerc(tax)} Savings:${getPerc(savings)} Salary:${getPerc(salary)} Other:${getPerc(other)}</span>
         `
         document.querySelector('.perc').innerHTML = text
     }
 
     let getTotalCurrent = () => {
+        current = 0
         Array.prototype.slice.call(document.querySelectorAll('input.current')).map(item => {
-            return current += item.value
+            return current += Number(item.value) || 0
         })
     }
 
     let getTotalSavings = () => {
+        savings = 0
         Array.prototype.slice.call(document.querySelectorAll('input.savings')).map(item => {
-            return current += item.value
+            return savings += Number(item.value) || 0
         })
     }
     let getTotalTax = () => {
+        tax = 0
         Array.prototype.slice.call(document.querySelectorAll('input.tax')).map(item => {
-            return current += item.value
+            return tax += Number(item.value) || 0
+        })
+        Array.prototype.slice.call(document.querySelectorAll('input.tap')).map(item => {
+            return tax += Number(item.value) || 0
         })
     }
 
     let getTotalSalary = () => {
+        salary = 0
         Array.prototype.slice.call(document.querySelectorAll('input.salary')).map(item => {
-            return current += item.value
+            return salary += Number(item.value) || 0
+        })
+    }
+    let getTotalOther = () => {
+        other = 0
+        Array.prototype.slice.call(document.querySelectorAll('input.other')).map(item => {
+            return other += Number(item.value) || 0
         })
     }
 
@@ -98,8 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             el.appendChild(label)
             el.appendChild(input)
             mainForm.appendChild(el)
-            if (item.biz_wallet_type === 'tax') {
-                console.log('hi')
+            if (item.biz_wallet_type === 'tax' || item.biz_wallet_type === 'tap') {
                 input.addEventListener('keyup', e => {
                     getTotalTax()
                     getPercentage()
@@ -120,6 +137,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.biz_wallet_type === 'salary') {
                 input.addEventListener('keyup', e => {
                     getTotalSalary()
+                    getPercentage()
+                })
+            }
+            if (item.biz_wallet_type === 'other') {
+                input.addEventListener('keyup', e => {
+                    getTotalOther()
                     getPercentage()
                 })
             }
